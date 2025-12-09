@@ -14,10 +14,13 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
-        <!-- Align with a recent Quarkus version; not executed here but kept consistent -->
+        <!-- Align with a recent Quarkus version -->
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.version>3.12.0</quarkus.platform.version>
+
+        <!-- Quarkiverse Amazon Services BOM version to manage AWS clients (SQS, DynamoDB, SES) -->
+        <quarkiverse.amazonservices.version>2.16.1</quarkiverse.amazonservices.version>
     </properties>
 
     <dependencyManagement>
@@ -26,6 +29,13 @@
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>${quarkus.platform.artifact-id}</artifactId>
                 <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkiverse.amazonservices</groupId>
+                <artifactId>quarkus-amazon-services-bom</artifactId>
+                <version>${quarkiverse.amazonservices.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -39,15 +49,15 @@
             <artifactId>quarkus-amazon-lambda</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
+            <groupId>io.quarkiverse.amazonservices</groupId>
             <artifactId>quarkus-amazon-sqs</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
+            <groupId>io.quarkiverse.amazonservices</groupId>
             <artifactId>quarkus-amazon-dynamodb</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
+            <groupId>io.quarkiverse.amazonservices</groupId>
             <artifactId>quarkus-amazon-ses</artifactId>
         </dependency>
 
