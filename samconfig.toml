@@ -1,0 +1,14 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "TechChallenge4-Processor"
+resolve_s3 = true
+s3_prefix = "TechChallenge4-Processor"
+region = "sa-east-1"
+profile = "Developer-Admin-791860731314"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "DynamoDbTableName=\"Feedbacks\" AdminEmail=\"gustavo.jog+admin@hotmail.com\" SourceEmail=\"gustavo.jog+no-reply@hotmail.com\""
+image_repositories = []
+
+[default.global.parameters]
+region = "sa-east-1"

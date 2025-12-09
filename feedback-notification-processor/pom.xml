@@ -21,6 +21,8 @@
 
         <!-- Quarkiverse Amazon Services BOM version to manage AWS clients (SQS, DynamoDB, SES) -->
         <quarkiverse.amazonservices.version>2.16.1</quarkiverse.amazonservices.version>
+        <!-- AWS SDK v2 BOM version (manages software.amazon.awssdk:*) -->
+        <aws.sdk.version>2.29.28</aws.sdk.version>
     </properties>
 
     <dependencyManagement>
@@ -36,6 +38,13 @@
                 <groupId>io.quarkiverse.amazonservices</groupId>
                 <artifactId>quarkus-amazon-services-bom</artifactId>
                 <version>${quarkiverse.amazonservices.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws.sdk.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -83,6 +92,12 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-logging-json</artifactId>
+        </dependency>
+
+        <!-- Required AWS SDK HTTP client for Quarkiverse Amazon Services -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>url-connection-client</artifactId>
         </dependency>
     </dependencies>
 
