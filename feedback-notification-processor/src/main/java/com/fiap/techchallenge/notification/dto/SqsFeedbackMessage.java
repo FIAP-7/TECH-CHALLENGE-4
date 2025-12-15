@@ -1,5 +1,8 @@
 package com.fiap.techchallenge.notification.dto;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class SqsFeedbackMessage {
     private String feedbackId;
 
