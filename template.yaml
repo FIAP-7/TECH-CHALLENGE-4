@@ -7,7 +7,7 @@ Globals:
   Function:
     Timeout: 30
     MemorySize: 256
-    Runtime: provided.al2
+    # Runtime removido daqui pois será definido pela Imagem Docker
     Architectures:
       - x86_64
 
@@ -35,20 +35,18 @@ Resources:
         deadLetterTargetArn: !GetAtt FeedbackFailedQueue.Arn
         maxReceiveCount: 3
 
-  # <-- CORRIGIDO: NotificationProcessorFunction agora está indentado DENTRO de "Resources:"
   NotificationProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: NotificationProcessorFunction
-      Description: Consome mensagens da SQS com IDs de feedback e envia e-mails via SES para casos críticos.
-      PackageType: Zip
-      # 1. APONTE PARA O DIRETRIO DO SEU MDULO MAVEN, NO PARA O ZIP
-      CodeUri: feedback-notification-processor/
-      # 2. O HANDLER NO  MAIS 'bootstrap'. DEIXE O SAM CONFIGURAR.
-      #    Apenas o Runtime  necessrio.
-      Runtime: provided.al2
+      Description: Consome mensagens da SQS com IDs de feedback via Container Image.
 
-      Handler: bootstrap
+      # MUDANÇA PRINCIPAL: Mudamos de Zip para Image
+      PackageType: Image
+
+      # Nota: Removemos CodeUri, Runtime e Handler.
+      # O SAM agora olha para a seção Metadata para saber o que construir.
+
       Events:
         SQSTrigger:
           Type: SQS
@@ -62,7 +60,6 @@ Resources:
           EMAIL_SOURCE_ADDRESS: !Ref SourceEmail
           FEEDBACK_DYNAMODB_TABLE_NAME: !Ref DynamoDbTableName
       Policies:
-        # Suas policies aqui esto corretas, no precisam de mudana.
         - Statement:
             - Effect: Allow
               Action:
@@ -84,9 +81,12 @@ Resources:
                 - logs:CreateLogStream
                 - logs:PutLogEvents
               Resource: '*'
-    # <-- CORRIGIDO: Metadata está no mesmo nível de Type e Properties, e DENTRO do recurso
+
+    # METADADOS PARA O BUILD COM DOCKER
     Metadata:
-      BuildMethod: makefile
+      Dockerfile: Dockerfile
+      DockerContext: ./feedback-notification-processor
+      DockerTag: v1
 
 Outputs:
   FeedbackSubmittedQueueUrl:
