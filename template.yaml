@@ -15,22 +15,18 @@ Parameters:
   DynamoDbTableName:
     Type: String
     Default: Feedbacks
-
   AdminEmail:
     Type: String
     Default: gustavo.jog+admin@hotmail.com
-
   SourceEmail:
     Type: String
     Default: gustavo.jog+no-reply@hotmail.com
-
 
 Resources:
   FeedbackFailedQueue:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: FeedbackFailedQueue
-
   FeedbackSubmittedQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -39,14 +35,20 @@ Resources:
         deadLetterTargetArn: !GetAtt FeedbackFailedQueue.Arn
         maxReceiveCount: 3
 
+  # <-- CORRIGIDO: NotificationProcessorFunction agora está indentado DENTRO de "Resources:"
   NotificationProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: NotificationProcessorFunction
       Description: Consome mensagens da SQS com IDs de feedback e envia e-mails via SES para casos críticos.
       PackageType: Zip
-      CodeUri: feedback-notification-processor/target/function.zip
-      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      # 1. APONTE PARA O DIRETRIO DO SEU MDULO MAVEN, NO PARA O ZIP
+      CodeUri: feedback-notification-processor/
+      # 2. O HANDLER NO  MAIS 'bootstrap'. DEIXE O SAM CONFIGURAR.
+      #    Apenas o Runtime  necessrio.
+      Runtime: provided.al2
+
+      Handler: bootstrap
       Events:
         SQSTrigger:
           Type: SQS
@@ -55,12 +57,12 @@ Resources:
             BatchSize: 1
       Environment:
         Variables:
-          QUARKUS_LAMBDA_HANDLER: notificationProcessor
           QUARKUS_LOG_LEVEL: INFO
           EMAIL_ADMIN_ADDRESS: !Ref AdminEmail
           EMAIL_SOURCE_ADDRESS: !Ref SourceEmail
           FEEDBACK_DYNAMODB_TABLE_NAME: !Ref DynamoDbTableName
       Policies:
+        # Suas policies aqui esto corretas, no precisam de mudana.
         - Statement:
             - Effect: Allow
               Action:
@@ -82,6 +84,9 @@ Resources:
                 - logs:CreateLogStream
                 - logs:PutLogEvents
               Resource: '*'
+    # <-- CORRIGIDO: Metadata está no mesmo nível de Type e Properties, e DENTRO do recurso
+    Metadata:
+      BuildMethod: makefile
 
 Outputs:
   FeedbackSubmittedQueueUrl:
