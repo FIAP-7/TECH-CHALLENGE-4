@@ -1,5 +1,8 @@
 package com.fiap.techchallenge.ingestion.model;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class Feedback {
     private String feedbackId;
     private String descricao;

@@ -3,7 +3,9 @@ package com.fiap.techchallenge.ingestion.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
+@RegisterForReflection
 public class FeedbackRequest {
 
     @NotBlank(message = "descricao é obrigatória")
