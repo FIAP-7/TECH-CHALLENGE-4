@@ -7,7 +7,7 @@ s3_prefix = "TechChallenge4-Processor"
 profile = "Developer-Admin-791860731314"
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "DynamoDbTableName=\"Feedbacks\" AdminEmail=\"gustavo.jog+admin@hotmail.com\" SourceEmail=\"gustavo.jog+no-reply@hotmail.com\""
-image_repositories = ["NotificationProcessorFunction=791860731314.dkr.ecr.sa-east-1.amazonaws.com/techchallenge4processorf5b6f8d7/notificationprocessorfunction18b2472brepo"]
+image_repositories = ["NotificationProcessorFunction=791860731314.dkr.ecr.sa-east-1.amazonaws.com/techchallenge4processorf5b6f8d7/notificationprocessorfunction18b2472brepo", "FeedbackIngestionFunction=791860731314.dkr.ecr.sa-east-1.amazonaws.com/techchallenge4processorf5b6f8d7/feedbackingestionfunction7b497a8arepo"]
 
 [default.global.parameters]
 region = "sa-east-1"
