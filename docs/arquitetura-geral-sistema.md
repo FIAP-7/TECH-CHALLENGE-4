@@ -14,40 +14,41 @@ Este diagrama ilustra como os diferentes serviços da AWS e as funções Quarkus
 ```mermaid
 graph TD
     subgraph "Cliente (Estudante)"
-        A[POST /avaliacao] --> B(API Gateway)
+        A[POST /avaliacao] --> B[API Gateway]
     end
 
     subgraph "AWS"
-        B -- síncrono --> C{Lambda: Ingestão de Feedback<br>(Quarkus RESTEasy)};
-        C -- grava --> D[(DynamoDB<br>Tabela: Feedbacks)];
-        C -- envia evento --> E(SQS<br>Fila: FeedbackSubmitted);
+        B -- síncrono --> C[Lambda: Ingestão de Feedback\nQuarkus RESTEasy]
+        C -- grava --> D[(DynamoDB\nTabela: Feedbacks)]
+        C -- envia evento --> E[SQS\nFila: FeedbackSubmitted]
 
-        E -- aciona --> F{Lambda: Processador de Notificações<br>(Quarkus)};
-        F -- lê --> D;
-        F -- Se Crítico --> G[SES<br>(Simple Email Service)];
-        G -- envia email --> H((Administradores));
+        E -- aciona --> F[Lambda: Processador de Notificações\nQuarkus]
+        F -- lê --> D
+        F -- se crítico --> G[SES\nSimple Email Service]
+        G -- envia email --> H((Administradores))
 
-        I(EventBridge<br>Regra Semanal - Cron) -- aciona --> J{Lambda: Gerador de Relatórios<br>(Quarkus)};
-        J -- consulta --> D;
-        J -- gera relatório e armazena --> K[(S3<br>Bucket: Relatórios)];
-        J -- envia link via --> G;
+        I[EventBridge\nRegra Semanal - Cron] -- aciona --> J[Lambda: Gerador de Relatórios\nQuarkus]
+        J -- consulta --> D
+        J -- gera relatório e armazena --> K[(S3\nBucket: Relatórios)]
+        J -- envia link via --> G
 
         subgraph "Segurança e Monitoramento"
-            L(IAM) -- permissões --> C;
-            L -- permissões --> F;
-            L -- permissões --> J;
-            M(CloudWatch) -- logs/métricas --> C;
-            M -- logs/métricas --> F;
-            M -- logs/métricas --> J;
-            N(AWS X-Ray) -- rastreamento --> C;
-            N -- rastreamento --> F;
-            N -- rastreamento --> J;
+            L[IAM] -- permissões --> C
+            L -- permissões --> F
+            L -- permissões --> J
+            M[CloudWatch] -- logs/métricas --> C
+            M -- logs/métricas --> F
+            M -- logs/métricas --> J
+            N[AWS X-Ray] -- rastreamento --> C
+            N -- rastreamento --> F
+            N -- rastreamento --> J
         end
     end
 
     style C fill:#f9f,stroke:#333,stroke-width:2px
     style F fill:#f9f,stroke:#333,stroke-width:2px
     style J fill:#f9f,stroke:#333,stroke-width:2px
+
 ```
 
 ### **Detalhamento dos Componentes**
@@ -67,16 +68,16 @@ graph TD
         *   **Atributos:** `descricao` (String), `nota` (Number), `status` (String - ex: "PROCESSADO", "PENDENTE"), `dataEnvio` (String - ISO 8601).
 
     **Design do Banco de Dados:**
-    ```mermaid
+     ```mermaid
     erDiagram
-        Feedbacks {
-            string FeedbackID PK "UUID único"
-            number Timestamp SK "Timestamp da criação"
-            string descricao "Texto do feedback"
-            number nota "Nota de 0 a 10"
-            string status "Status do processamento"
-            string dataEnvio "Data no formato ISO 8601"
-        }
+    FEEDBACKS {
+        string FeedbackID PK
+        datetime Timestamp
+        string descricao
+        int nota
+        string status
+        datetime dataEnvio
+    }
     ```
 
 3.  **Processador de Eventos e Notificação (Assíncrono)**
