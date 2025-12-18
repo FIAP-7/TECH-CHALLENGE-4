@@ -10,7 +10,8 @@ WORKDIR /code
 
 # Dá permissão de execução ao wrapper (importante para Linux/Docker)
 RUN chmod +x mvnw && \
-    touch src/main/resources/application.properties # Cria arquivo dummy se não existir para evitar erro no copy
+    mkdir -p src/main/resources && \
+    touch src/main/resources/application.properties
 
 # Baixa as dependências usando o wrapper
 RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
