@@ -9,7 +9,9 @@ USER quarkus
 WORKDIR /code
 
 # Dá permissão de execução ao wrapper (importante para Linux/Docker)
-RUN chmod +x mvnw
+RUN chmod +x mvnw && \
+    mkdir -p src/main/resources && \
+    touch src/main/resources/application.properties
 
 # Baixa as dependências usando o wrapper
 RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline

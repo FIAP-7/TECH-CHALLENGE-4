@@ -68,7 +68,7 @@ graph TD
         *   **Atributos:** `descricao` (String), `nota` (Number), `status` (String - ex: "PROCESSADO", "PENDENTE"), `dataEnvio` (String - ISO 8601).
 
     **Design do Banco de Dados:**
-    ```mermaid
+     ```mermaid
     erDiagram
     FEEDBACKS {
         string FeedbackID PK
