@@ -8,11 +8,12 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 @RegisterForReflection
 public class FeedbackRequest {
 
-    @NotBlank(message = "descricao é obrigatória")
+    @NotBlank(message = "O campo descricao é obrigatória")
     private String descricao;
 
-    @Min(value = 0, message = "nota mínima é 0")
-    @Max(value = 10, message = "nota máxima é 10")
+    @Min(value = 0, message = "Nota mínima é 0")
+    @Max(value = 10, message = "Nota máxima é 10")
+    @NotBlank(message = "O campo nota é obrigatória")
     private Integer nota;
 
     public String getDescricao() {
