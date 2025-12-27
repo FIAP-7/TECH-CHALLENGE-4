@@ -8,6 +8,9 @@ COPY --chown=quarkus:quarkus pom.xml /code/
 USER quarkus
 WORKDIR /code
 
+# Remove caracteres do Windows (\r) do script mvnw para evitar erro de bad interpreter
+RUN sed -i 's/\r$//' mvnw
+
 # Dá permissão de execução ao wrapper (importante para Linux/Docker)
 RUN chmod +x mvnw && \
     mkdir -p src/main/resources && \

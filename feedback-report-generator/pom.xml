@@ -107,6 +107,15 @@
 
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
+            <artifactId>checksums</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>checksums-spi</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
             <artifactId>url-connection-client</artifactId>
         </dependency>
     </dependencies>
