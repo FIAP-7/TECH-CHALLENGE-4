@@ -3,7 +3,13 @@ package com.fiap.techchallenge.infrastructure.pdf;
 import com.fiap.techchallenge.domain.model.PdfData;
 import com.fiap.techchallenge.domain.service.PdfGenerator;
 import com.fiap.techchallenge.infrastructure.dynamo.DynamoPdfDataService;
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfWriter;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
@@ -24,42 +30,31 @@ public class HtmlPdfGenerator implements PdfGenerator {
     public byte[] gerarPdf() {
         PdfData pdfData = dynamoPdfDataService.avaliacoesUltimaSemana();
 
-        String html = """
-                <html>
-                  <body style="font-family: Arial">
-                    <h1>%s</h1>
-                    <br/>
-                    <p>
-                        <span>Media de avaliações da ultima semana: %s</span>
-                    </p>
-                    <p>
-                        <span>Quatidade de avaliações da ultima semana: %s</span>
-                    </p>
-                    <p>
-                        <span>Quatidade de avaliações criticas: %s</span>
-                    </p>
-                  </body>
-                </html>
-                """
-                .formatted(
-                        pdfData.title(),
-                        pdfData.mediaAvaliacoes(),
-                        pdfData.quantidadeTotalAvaliacoes(),
-                        pdfData.quantidadeAvaliacoesCriticas()
-                );
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            Document document = new Document(PageSize.A4);
+            PdfWriter.getInstance(document, baos);
+            document.open();
 
-        try(ByteArrayOutputStream baos = new ByteArrayOutputStream()){
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.withHtmlContent(html, null);
-            builder.toStream(baos);
-            builder.run();
+            // Title
+            Font titleFont = new Font(Font.HELVETICA, 20, Font.BOLD);
+            Paragraph title = new Paragraph(pdfData.title(), titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            document.add(new Paragraph(" "));
+
+            // Body content
+            Font bodyFont = new Font(Font.HELVETICA, 12, Font.NORMAL);
+            document.add(new Paragraph(new Phrase("Media de avaliações da ultima semana: " + pdfData.mediaAvaliacoes(), bodyFont)));
+            document.add(new Paragraph(new Phrase("Quatidade de avaliações da ultima semana: " + pdfData.quantidadeTotalAvaliacoes(), bodyFont)));
+            document.add(new Paragraph(new Phrase("Quatidade de avaliações criticas: " + pdfData.quantidadeAvaliacoesCriticas(), bodyFont)));
+
+            document.close();
 
             LOG.debug("PDF Gerado com sucesso");
-
             return baos.toByteArray();
-        }catch (Exception e){
+        } catch (Exception e) {
             LOG.error("Ocorreu um erro ao gerar o PDF [" + e.getMessage() + "]");
-
             throw new RuntimeException("Ocorreu um erro ao gerar o PDF", e);
         }
     }
