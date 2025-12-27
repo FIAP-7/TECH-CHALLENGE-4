@@ -11,10 +11,10 @@ public class SesEmailSender implements EmailSender {
 
     private final SesClient sesClient;
 
-    @ConfigProperty(name = "email.admin.address")
+    @ConfigProperty(name = "EMAIL_ADMIN_ADDRESS")
     String adminEmail;
 
-    @ConfigProperty(name = "email.source.address")
+    @ConfigProperty(name = "EMAIL_SOURCE_ADDRESS")
     String sourceEmail;
 
     public SesEmailSender(SesClient sesClient) {
