@@ -30,12 +30,9 @@ Parameters:
     Default: FeedbackFailedQueue
 
   # Recursos existentes para o gerador de relatórios
-  IdempotencyTableName:
-    Type: String
-    Default: PdfJobs
   ReportsBucketName:
     Type: String
-    Default: feedback-reports-bucket
+    Default: relatorios-avaliacao-bucket
   PdfUrlDays:
     Type: Number
     Default: 20
@@ -202,7 +199,6 @@ Resources:
         Variables:
           QUARKUS_LOG_LEVEL: INFO
           feedback.dynamodb.table-name: !Ref DynamoDbTableName
-          idempotency.dynamodb.table-name: !Ref IdempotencyTableName
           pdf.bucket: !Ref ReportsBucketName
           pdf.dias-url-valida: !Ref PdfUrlDays
           email.admin.address: !Ref AdminEmail
@@ -216,12 +212,6 @@ Resources:
                 - dynamodb:Scan
                 - dynamodb:GetItem
               Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDbTableName}"
-            # DynamoDB: idempotência (get/put)
-            - Effect: Allow
-              Action:
-                - dynamodb:GetItem
-                - dynamodb:PutItem
-              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${IdempotencyTableName}"
             # S3: gravar e ler arquivos do bucket de relatórios
             - Effect: Allow
               Action:
