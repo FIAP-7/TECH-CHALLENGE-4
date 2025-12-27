@@ -19,7 +19,7 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
 
     private final DynamoDbClient dynamoDbClient;
 
-    @ConfigProperty(name = "feedback.dynamodb.table-name")
+    @ConfigProperty(name = "FEEDBACK_DYNAMODB_TABLE_NAME")
     String table;
 
     public DynamoPdfDataService(DynamoDbClient dynamoDbClient) {

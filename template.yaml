@@ -198,11 +198,11 @@ Resources:
       Environment:
         Variables:
           QUARKUS_LOG_LEVEL: INFO
-          feedback.dynamodb.table-name: !Ref DynamoDbTableName
-          pdf.bucket: !Ref ReportsBucketName
-          pdf.dias-url-valida: !Ref PdfUrlDays
-          email.admin.address: !Ref AdminEmail
-          email.source.address: !Ref SourceEmail
+          FEEDBACK_DYNAMODB_TABLE_NAME: !Ref DynamoDbTableName
+          PDF_BUCKET: !Ref ReportsBucketName
+          PDF_DIAS_URL_VALIDA: !Ref PdfUrlDays
+          EMAIL_ADMIN_ADDRESS: !Ref AdminEmail
+          EMAIL_SOURCE_ADDRESS: !Ref SourceEmail
       Policies:
         - Statement:
             # DynamoDB: leitura na tabela de feedbacks

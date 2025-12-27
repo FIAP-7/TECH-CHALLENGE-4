@@ -19,10 +19,10 @@ public class S3StorageService implements StorageService {
     private final S3Client s3;
     private final S3Presigner presigner;
 
-    @ConfigProperty(name = "pdf.bucket")
+    @ConfigProperty(name = "PDF_BUCKET")
     String bucket;
 
-    @ConfigProperty(name = "pdf.dias-url-valida", defaultValue = "20")
+    @ConfigProperty(name = "PDF_DIAS_URL_VALIDA", defaultValue = "20")
     String daysStr;
 
     Long days = 20L;
