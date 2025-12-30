@@ -16,6 +16,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Java (Temurin) with Maven cache
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'maven'
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -32,11 +39,20 @@ jobs:
         with:
           use-installer: true
 
+      # Cache para acelerar o SAM build (imagens e artefatos reutilizáveis)
+      - name: Cache SAM build artifacts
+        uses: actions/cache@v4
+        with:
+          path: .aws-sam/cache
+          key: ${{ runner.os }}-sam-${{ hashFiles('template.yaml', '**/pom.xml', '**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-sam-
+
       # SAM Build vai ler o template.yaml na raiz.
       # Ele verá Metadata -> DockerContext: ./feedback-notification-processor
       # E vai rodar o seu Dockerfile automaticamente.
-      - name: SAM Build
-        run: sam build
+      - name: SAM Build (with cache)
+        run: sam build --cached --cache-dir .aws-sam/cache
 
       # SAM Deploy cria os repositórios ECR automaticamente (--resolve-image-repos)
       - name: SAM Deploy
