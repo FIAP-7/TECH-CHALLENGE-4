@@ -35,7 +35,7 @@ Parameters:
     Default: relatorios-avaliacao-bucket
   PdfUrlDays:
     Type: Number
-    Default: 20
+    Default: 7
   ReportSchedule:
     Type: String
     Default: rate(1 day)
@@ -188,6 +188,8 @@ Resources:
     Properties:
       Description: Gera relatório em PDF, salva no S3 e envia e-mail com link.
       PackageType: Image
+      Timeout: 120
+      MemorySize: 1024
       Events:
         ScheduleEvent:
           Type: Schedule
@@ -198,6 +200,7 @@ Resources:
       Environment:
         Variables:
           QUARKUS_LOG_LEVEL: INFO
+          JAVA_AWT_HEADLESS: "true"
           FEEDBACK_DYNAMODB_TABLE_NAME: !Ref DynamoDbTableName
           PDF_BUCKET: !Ref ReportsBucketName
           PDF_DIAS_URL_VALIDA: !Ref PdfUrlDays
