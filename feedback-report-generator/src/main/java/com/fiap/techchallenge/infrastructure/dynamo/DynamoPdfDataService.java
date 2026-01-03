@@ -6,8 +6,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
-import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
+import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
+import software.amazon.awssdk.services.dynamodb.model.ScanResponse;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -28,8 +28,8 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
 
     @Override
     public PdfData avaliacoesUltimaSemana() {
-        QueryResponse response = dynamoDbClient.query(
-                QueryRequest.builder()
+        ScanResponse response = dynamoDbClient.scan(
+                ScanRequest.builder()
                         .tableName(table)
                         .build()
         );
