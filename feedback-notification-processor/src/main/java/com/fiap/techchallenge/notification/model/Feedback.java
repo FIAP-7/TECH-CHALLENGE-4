@@ -7,7 +7,7 @@ public class Feedback {
     private String feedbackId;
     private Integer nota;
     private String descricao;
-    private String dataEnvio; // ISO-8601 string
+    private String dataEnvio;
 
     public String getFeedbackId() {
         return feedbackId;

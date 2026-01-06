@@ -14,14 +14,11 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
 
-        <!-- Align with a recent Quarkus version -->
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.version>3.12.0</quarkus.platform.version>
 
-        <!-- Quarkiverse Amazon Services BOM version to manage AWS clients (SQS, DynamoDB, SES) -->
         <quarkiverse.amazonservices.version>2.16.1</quarkiverse.amazonservices.version>
-        <!-- AWS SDK v2 BOM version (manages software.amazon.awssdk:*) -->
         <aws.sdk.version>2.29.28</aws.sdk.version>
     </properties>
 
@@ -52,7 +49,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Quarkus AWS Lambda and AWS service clients -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-amazon-lambda</artifactId>
@@ -70,31 +66,25 @@
             <artifactId>quarkus-amazon-ses</artifactId>
         </dependency>
 
-        <!-- JSON handling -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jsonb</artifactId>
         </dependency>
 
-        <!-- AWS Lambda Java core/events (SQSEvent) -->
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-core</artifactId>
-            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-lambda-java-events</artifactId>
-            <version>3.11.4</version>
         </dependency>
 
-        <!-- Logging -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-logging-json</artifactId>
         </dependency>
 
-        <!-- Required AWS SDK HTTP client for Quarkiverse Amazon Services -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>url-connection-client</artifactId>
@@ -121,11 +111,7 @@
         </plugins>
     </build>
 
-    <!-- =================================================================== -->
-    <!-- CORREÇÃO ADICIONADA ABAIXO                                            -->
-    <!-- =================================================================== -->
     <profiles>
-        <!-- Este perfil é ativado com a flag "-Pnative" do Maven -->
         <profile>
             <id>native</id>
             <activation>
@@ -134,13 +120,11 @@
                 </property>
             </activation>
             <properties>
-                <!-- Esta propriedade instrui o Quarkus a construir um executável nativo -->
                 <quarkus.package.type>native</quarkus.package.type>
             </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <!-- Este plugin é usado para rodar testes de integração contra a imagem nativa -->
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>3.2.5</version>

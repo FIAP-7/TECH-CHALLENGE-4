@@ -47,16 +47,14 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
                 .filter(item -> item.getDataEnvio() != null && !item.getDataEnvio().isEmpty())
                 .filter(item -> {
                     try {
-                        // Tenta ler como Timestamp ISO (2025-12-24T01:12:05Z)
                         LocalDate date = OffsetDateTime.parse(item.getDataEnvio()).toLocalDate();
                         return date.isAfter(umaSemanaAtras);
                     } catch (Exception e) {
                         try {
-                            // Se falhar, tenta ler como data simples (2025-12-24)
                             LocalDate date = LocalDate.parse(item.getDataEnvio());
                             return date.isAfter(umaSemanaAtras);
                         } catch (Exception e2) {
-                            return false; // Ignora registros com data inválida
+                            return false;
                         }
                     }
                 }).collect(Collectors.toList());
@@ -81,8 +79,7 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
                 getItemString(item, "descricao", ""),
                 getItemInteger(item, "nota", 0),
                 getItemString(item, "status", "PENDING"),
-                getItemString(item, "dataEnvio", ""),
-                getItemString(item, "userId", "anonymous")
+                getItemString(item, "dataEnvio", "")
         );
     }
 

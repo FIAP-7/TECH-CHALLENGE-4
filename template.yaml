@@ -21,7 +21,6 @@ Parameters:
     Type: String
     Default: gustavo.jog+no-reply@hotmail.com
   
-  # NOMES EXATOS DAS SUAS FILAS EXISTENTES NA AWS (Criadas manualmente)
   QueueNameMain:
     Type: String
     Default: FeedbackSubmittedQueue
@@ -29,7 +28,6 @@ Parameters:
     Type: String
     Default: FeedbackFailedQueue
 
-  # Recursos existentes para o gerador de relatórios
   ReportsBucketName:
     Type: String
     Default: relatorios-avaliacao-bucket
@@ -42,13 +40,9 @@ Parameters:
 
 Resources:
 
-  # ---------------------------------------------------------
-  # CONSUMER LAMBDA (Processa mensagens da Fila)
-  # ---------------------------------------------------------
   NotificationProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      # REMOVIDO FunctionName FIXO PARA EVITAR CONFLITO DE DEPLOY
       Description: Processa mensagens da fila existente e envia notificações.
       PackageType: Image
 
@@ -56,7 +50,6 @@ Resources:
         SQSTrigger:
           Type: SQS
           Properties:
-            # Conecta na fila MAIN existente via ARN montado dinamicamente
             Queue: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueNameMain}"
             BatchSize: 1
       
@@ -69,7 +62,6 @@ Resources:
       
       Policies:
         - Statement:
-            # 1. Permissão na Fila Principal
             - Effect: Allow
               Action:
                 - sqs:ReceiveMessage
@@ -77,21 +69,18 @@ Resources:
                 - sqs:GetQueueAttributes
               Resource: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueNameMain}"
             
-            # 2. Permissão na DLQ
             - Effect: Allow
               Action:
                 - sqs:GetQueueAttributes
                 - sqs:SendMessage
               Resource: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueNameDLQ}"
 
-            # 3. DynamoDB
             - Effect: Allow
               Action:
                 - dynamodb:GetItem
                 - dynamodb:PutItem
               Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDbTableName}"
             
-            # 4. SES e Logs
             - Effect: Allow
               Action: ses:SendEmail
               Resource: '*'
@@ -107,9 +96,6 @@ Resources:
       DockerContext: ./feedback-notification-processor
       DockerTag: v1
 
-  # ---------------------------------------------------------
-  # API GATEWAY (HTTP API)
-  # ---------------------------------------------------------
   FeedbackApi:
     Type: AWS::Serverless::HttpApi
     Properties:
@@ -136,13 +122,9 @@ Resources:
         ThrottlingBurstLimit: 20
         ThrottlingRateLimit: 10
 
-  # ---------------------------------------------------------
-  # PRODUCER LAMBDA (Recebe HTTP e manda para Fila)
-  # ---------------------------------------------------------
   FeedbackIngestionFunction:
     Type: AWS::Serverless::Function
     Properties:
-      # REMOVIDO FunctionName FIXO PARA EVITAR CONFLITO DE DEPLOY
       Description: API de ingestão de feedbacks (HTTP) -> DynamoDB + SQS.
       PackageType: Image
       Events:
@@ -156,7 +138,6 @@ Resources:
         Variables:
           QUARKUS_LOG_LEVEL: INFO
           FEEDBACK_DYNAMODB_TABLE_NAME: !Ref DynamoDbTableName
-          # Monta a URL da fila (Necessária para o Producer)
           FEEDBACK_SUBMITTED_QUEUE_URL: !Sub "https://sqs.${AWS::Region}.amazonaws.com/${AWS::AccountId}/${QueueNameMain}"
       Policies:
         - Statement:
@@ -167,7 +148,6 @@ Resources:
             - Effect: Allow
               Action:
                 - sqs:SendMessage
-              # Monta o ARN da fila (Necessário para a Permissão)
               Resource: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${QueueNameMain}"
             - Effect: Allow
               Action:
@@ -180,9 +160,6 @@ Resources:
       DockerContext: ./feedback-ingestion-api
       DockerTag: v1
 
-  # ---------------------------------------------------------
-  # REPORT GENERATOR LAMBDA (Gera PDF, persiste no S3 e envia e-mail)
-  # ---------------------------------------------------------
   FeedbackReportGeneratorFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -208,24 +185,20 @@ Resources:
           EMAIL_SOURCE_ADDRESS: !Ref SourceEmail
       Policies:
         - Statement:
-            # DynamoDB: leitura na tabela de feedbacks
             - Effect: Allow
               Action:
                 - dynamodb:Query
                 - dynamodb:Scan
                 - dynamodb:GetItem
               Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${DynamoDbTableName}"
-            # S3: gravar e ler arquivos do bucket de relatórios
             - Effect: Allow
               Action:
                 - s3:PutObject
                 - s3:GetObject
               Resource: !Sub "arn:aws:s3:::${ReportsBucketName}/*"
-            # SES: Enviar e-mail
             - Effect: Allow
               Action: ses:SendEmail
               Resource: '*'
-            # Logs
             - Effect: Allow
               Action:
                 - logs:CreateLogGroup
@@ -237,9 +210,6 @@ Resources:
       DockerContext: ./feedback-report-generator
       DockerTag: v1
 
-  # ---------------------------------------------------------
-  # COGNITO (Autenticação)
-  # ---------------------------------------------------------
   FeedbackUserPool:
     Type: AWS::Cognito::UserPool
     Properties:

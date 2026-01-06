@@ -10,15 +10,13 @@ public class Avaliacao {
     private Integer nota;
     private String status;
     private String dataEnvio;
-    private String userId;
 
-    public Avaliacao(String feedbackId, String descricao, Integer nota, String status, String dataEnvio, String userId) {
+    public Avaliacao(String feedbackId, String descricao, Integer nota, String status, String dataEnvio) {
         this.feedbackId = feedbackId;
         this.descricao = descricao;
         this.nota = nota;
         this.status = status;
         this.dataEnvio = dataEnvio;
-        this.userId = userId;
     }
 
     public String getFeedbackId() {
@@ -59,13 +57,5 @@ public class Avaliacao {
 
     public void setDataEnvio(String dataEnvio) {
         this.dataEnvio = dataEnvio;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 }

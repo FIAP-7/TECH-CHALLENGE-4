@@ -34,7 +34,6 @@ public class S3StorageService implements StorageService {
     public String store(byte[] arquivo, String nomeArquivo) {
         String key = "relatorios/" + UUID.randomUUID() + nomeArquivo;
 
-        // 1. Upload do arquivo para o S3
         s3.putObject(
                 PutObjectRequest.builder()
                         .bucket(bucket)
@@ -44,13 +43,12 @@ public class S3StorageService implements StorageService {
                 RequestBody.fromBytes(arquivo)
         );
 
-        // 2. Lógica segura para expiração (Máximo 7 dias permitido pela AWS)
         long diasParaExpira;
         try {
             diasParaExpira = Long.parseLong(daysStr);
-            if (diasParaExpira > 7) diasParaExpira = 7; // Trava de segurança
+            if (diasParaExpira > 7) diasParaExpira = 7;
         } catch (Exception e) {
-            diasParaExpira = 7; // Fallback caso o parâmetro falhe
+            diasParaExpira = 7;
         }
 
         GetObjectRequest getRequest = GetObjectRequest.builder()
@@ -58,7 +56,6 @@ public class S3StorageService implements StorageService {
                 .key(key)
                 .build();
 
-        // 3. Gera a URL pré-assinada
         return presigner.presignGetObject(
                 GetObjectPresignRequest.builder()
                         .signatureDuration(Duration.ofDays(diasParaExpira))

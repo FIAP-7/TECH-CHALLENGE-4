@@ -35,7 +35,6 @@ public class HtmlPdfGenerator implements PdfGenerator {
             PdfWriter.getInstance(document, baos);
             document.open();
 
-            // Title
             Font titleFont = new Font(Font.HELVETICA, 20, Font.BOLD);
             Paragraph title = new Paragraph(pdfData.title(), titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
@@ -43,7 +42,6 @@ public class HtmlPdfGenerator implements PdfGenerator {
 
             document.add(new Paragraph(" "));
 
-            // Body content
             Font bodyFont = new Font(Font.HELVETICA, 12, Font.NORMAL);
             document.add(new Paragraph(new Phrase("Media de avaliações da ultima semana: " + pdfData.mediaAvaliacoes(), bodyFont)));
             document.add(new Paragraph(new Phrase("Quatidade de avaliações da ultima semana: " + pdfData.quantidadeTotalAvaliacoes(), bodyFont)));

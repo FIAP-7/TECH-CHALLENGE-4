@@ -96,7 +96,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Required AWS SDK HTTP client for Quarkiverse Amazon Services -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>url-connection-client</artifactId>

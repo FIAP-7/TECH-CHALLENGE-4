@@ -48,11 +48,9 @@ public class NotificationProcessorFunction implements RequestHandler<SQSEvent, V
                 feedbackId = parsed != null ? parsed.getFeedbackId() : null;
                 if (feedbackId == null || feedbackId.isBlank()) {
                     LOG.error("Erro ao parsear mensagem SQS: campo feedbackId ausente ou vazio.");
-                    // Mensagem considerada processada (evitar exceção para ir à DLQ após tentativas)
                     continue;
                 }
             } catch (Exception e) {
-                // Erro de parsing não deve lançar exceção para permitir que vá para DLQ.
                 LOG.error("Erro de Parsing do corpo da mensagem SQS: " + e.getMessage());
                 continue;
             }
@@ -63,13 +61,11 @@ public class NotificationProcessorFunction implements RequestHandler<SQSEvent, V
             try {
                 feedback = feedbackRepository.findById(feedbackId);
             } catch (RuntimeException awsCommsError) {
-                // Falha ao contatar AWS (DynamoDB). Lançar para reprocessar.
                 throw awsCommsError;
             }
 
             if (feedback == null) {
                 LOG.errorf("Feedback com ID %s não encontrado na tabela DynamoDB.", feedbackId);
-                // Considera processado; não lança exceção
                 continue;
             }
 
@@ -84,7 +80,6 @@ public class NotificationProcessorFunction implements RequestHandler<SQSEvent, V
                 emailService.enviarEmailDeAlerta(feedback);
             } catch (RuntimeException e) {
                 LOG.errorf("Falha ao enviar e-mail para feedback %s: %s.", feedbackId, e.getMessage());
-                // Lançar para reprocessamento
                 throw e;
             }
         }

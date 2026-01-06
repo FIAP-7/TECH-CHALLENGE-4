@@ -54,7 +54,6 @@ public class FeedbackRepository {
             }
             return f;
         } catch (SdkException e) {
-            // Deixar claro que é uma falha de comunicação com a AWS
             throw new RuntimeException("Falha ao consultar o DynamoDB", e);
         }
     }
