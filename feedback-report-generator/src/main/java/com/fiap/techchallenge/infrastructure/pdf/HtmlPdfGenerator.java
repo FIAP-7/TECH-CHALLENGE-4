@@ -67,6 +67,8 @@ public class HtmlPdfGenerator implements PdfGenerator {
                 tableDia.addCell(String.valueOf(valor));
             });
 
+            document.add(tableDia);
+
             document.add(new Paragraph(" "));
 
             document.add(new Paragraph("Quantidade de avaliações por urgência", subtituloFont));
@@ -85,9 +87,11 @@ public class HtmlPdfGenerator implements PdfGenerator {
                 tableUrgencia.addCell(String.valueOf(valor));
             });
 
+            document.add(tableUrgencia);
+
             document.add(new Paragraph(" "));
 
-            document.add(new Paragraph("Avalições", subtituloFont));
+            document.add(new Paragraph("Avaliações", subtituloFont));
             document.add(new Paragraph(" "));
 
             if (pdfData.avaliacoes() == null || pdfData.avaliacoes().isEmpty()) {
@@ -95,14 +99,16 @@ public class HtmlPdfGenerator implements PdfGenerator {
             } else{
                 pdfData.avaliacoes().forEach(item -> {
                     linhaAvaliacao("Data de envio: ", destaqueFont, item.getDataEnvio(), bodyFont, document);
-                    linhaAvaliacao("Urgencia: ", destaqueFont, item.getStatus(), bodyFont, document);
+                    linhaAvaliacao("Urgencia: ", destaqueFont, item.getNota().toString(), bodyFont, document);
                     linhaAvaliacao("Descrição: ", destaqueFont, item.getDescricao(), bodyFont, document);
+
+                    document.add(new Paragraph(" "));
 
                     LineSeparator line = new LineSeparator();
                     line.setLineWidth(0.5f);
-                    line.setPercentage(80);
+                    line.setPercentage(90);
                     line.setLineColor(Color.GRAY);
-                    line.setOffset(5);
+                    line.setOffset(4);
 
                     document.add(line);
                 });
