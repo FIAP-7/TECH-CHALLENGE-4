@@ -49,22 +49,18 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Quarkus Lambda HTTP to expose JAX-RS on API Gateway -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-amazon-lambda-http</artifactId>
         </dependency>
-        <!-- REST + JSON -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
         </dependency>
-        <!-- Bean Validation for DTOs -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-validator</artifactId>
         </dependency>
-        <!-- AWS services -->
         <dependency>
             <groupId>io.quarkiverse.amazonservices</groupId>
             <artifactId>quarkus-amazon-dynamodb</artifactId>
@@ -73,12 +69,10 @@
             <groupId>io.quarkiverse.amazonservices</groupId>
             <artifactId>quarkus-amazon-sqs</artifactId>
         </dependency>
-        <!-- HTTP client impl for AWS SDK used by Quarkiverse clients -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>url-connection-client</artifactId>
         </dependency>
-        <!-- Logging JSON for CloudWatch -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-logging-json</artifactId>

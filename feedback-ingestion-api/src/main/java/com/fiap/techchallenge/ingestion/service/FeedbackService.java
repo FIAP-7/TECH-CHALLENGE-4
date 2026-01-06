@@ -36,7 +36,6 @@ public class FeedbackService {
     String queueUrl;
 
     public Feedback processarFeedback(FeedbackRequest request, String userId) {
-        // Geração de dados
         String id = UUID.randomUUID().toString();
         String dataEnvio = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
 
@@ -48,7 +47,6 @@ public class FeedbackService {
         feedback.setDataEnvio(dataEnvio);
         feedback.setUserId(userId);
 
-        // Persistir no DynamoDB
         Map<String, AttributeValue> item = new HashMap<>();
         item.put("FeedbackID", AttributeValue.builder().s(id).build());
         if (request.getDescricao() != null) {
@@ -69,7 +67,6 @@ public class FeedbackService {
                 .build();
         dynamoDbClient.putItem(put);
 
-        // Enviar evento minimalista para SQS
         String payload = "{\"feedbackId\":\"" + id + "\"}";
         if (queueUrl != null && !queueUrl.isBlank()) {
             SendMessageRequest send = SendMessageRequest.builder()

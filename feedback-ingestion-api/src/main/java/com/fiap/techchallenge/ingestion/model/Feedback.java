@@ -9,7 +9,7 @@ public class Feedback {
     private Integer nota;
     private String status;
     private String dataEnvio;
-    private String userId; // Identificador do usuário autenticado (Cognito sub)
+    private String userId;
 
     public String getFeedbackId() {
         return feedbackId;
