@@ -99,7 +99,7 @@ public class HtmlPdfGenerator implements PdfGenerator {
                 document.add(new Paragraph("Não possui avaliações nessa semana.", bodyFont));
             } else{
                 pdfData.avaliacoes().forEach(item -> {
-                    linhaAvaliacao("Data de envio: ", destaqueFont, item.getDataEnvio().format(Avaliacao.FORMATTER_DATE_TIME), bodyFont, document);
+                    linhaAvaliacao("Data de envio: ", destaqueFont, item.getDataEnvio().format(Avaliacao.FORMATTER_DATE), bodyFont, document);
                     linhaAvaliacao("Urgencia: ", destaqueFont, item.getNota().toString(), bodyFont, document);
                     linhaAvaliacao("Descrição: ", destaqueFont, item.getDescricao(), bodyFont, document);
 
