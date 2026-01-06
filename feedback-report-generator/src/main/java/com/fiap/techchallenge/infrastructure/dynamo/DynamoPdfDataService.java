@@ -44,14 +44,14 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
         LocalDate umaSemanaAtras = LocalDate.now().minus(Period.ofWeeks(1));
 
         List<Avaliacao> itensSemana = itensDatabase.stream()
-                .filter(item -> item.getDataEnvio() != null && !item.getDataEnvio().isEmpty())
+                .filter(item -> item.getDataEnvioStr() != null && !item.getDataEnvioStr().isEmpty())
                 .filter(item -> {
                     try {
-                        LocalDate date = OffsetDateTime.parse(item.getDataEnvio()).toLocalDate();
+                        LocalDate date = OffsetDateTime.parse(item.getDataEnvioStr()).toLocalDate();
                         return date.isAfter(umaSemanaAtras);
                     } catch (Exception e) {
                         try {
-                            LocalDate date = LocalDate.parse(item.getDataEnvio());
+                            LocalDate date = LocalDate.parse(item.getDataEnvioStr());
                             return date.isAfter(umaSemanaAtras);
                         } catch (Exception e2) {
                             return false;
@@ -72,7 +72,7 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
 
         Map<String, Long> mapQuatidadeAvaliacaoData = itensSemana.stream().collect(
                 Collectors.groupingBy(
-                        Avaliacao::getDataEnvio,
+                        avaliacao -> avaliacao.getDataEnvio().format(Avaliacao.FORMATTER_DATE),
                         Collectors.counting()
                 )
         );

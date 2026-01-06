@@ -1,5 +1,6 @@
 package com.fiap.techchallenge.infrastructure.pdf;
 
+import com.fiap.techchallenge.domain.model.Avaliacao;
 import com.fiap.techchallenge.domain.model.PdfData;
 import com.fiap.techchallenge.domain.service.PdfGenerator;
 import com.fiap.techchallenge.infrastructure.dynamo.DynamoPdfDataService;
@@ -82,8 +83,8 @@ public class HtmlPdfGenerator implements PdfGenerator {
             tableUrgencia.addCell(new Phrase("Nivel de urgência", destaqueFont));
             tableUrgencia.addCell(new Phrase("Quantidade de Avaliações", destaqueFont));
 
-            pdfData.mapQuatidadeAvaliacaoData().forEach((chave, valor) -> {
-                tableUrgencia.addCell(chave);
+            pdfData.mapQuantidadeAvaliacaoNota().forEach((chave, valor) -> {
+                tableUrgencia.addCell(String.valueOf(chave));
                 tableUrgencia.addCell(String.valueOf(valor));
             });
 
@@ -98,7 +99,7 @@ public class HtmlPdfGenerator implements PdfGenerator {
                 document.add(new Paragraph("Não possui avaliações nessa semana.", bodyFont));
             } else{
                 pdfData.avaliacoes().forEach(item -> {
-                    linhaAvaliacao("Data de envio: ", destaqueFont, item.getDataEnvio(), bodyFont, document);
+                    linhaAvaliacao("Data de envio: ", destaqueFont, item.getDataEnvio().format(Avaliacao.FORMATTER_DATE_TIME), bodyFont, document);
                     linhaAvaliacao("Urgencia: ", destaqueFont, item.getNota().toString(), bodyFont, document);
                     linhaAvaliacao("Descrição: ", destaqueFont, item.getDescricao(), bodyFont, document);
 
