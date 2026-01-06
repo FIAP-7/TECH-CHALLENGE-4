@@ -70,7 +70,21 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
                 .filter(item -> item.getNota() < 2)
                 .count();
 
-        return new PdfData("Avaliacoes.pdf", qtdAvaliacoes, mediaNotas, qtdAvaliacoesCriticas);
+        Map<String, Long> mapQuatidadeAvaliacaoData = itensSemana.stream().collect(
+                Collectors.groupingBy(
+                        Avaliacao::getDataEnvio,
+                        Collectors.counting()
+                )
+        );
+
+        Map<Integer, Long> mapQuantidadeAvaliacaoNota = itensSemana.stream().collect(
+                Collectors.groupingBy(
+                        Avaliacao::getNota,
+                        Collectors.counting()
+                )
+        );
+
+        return new PdfData("Avaliacoes", qtdAvaliacoes, mediaNotas, qtdAvaliacoesCriticas, itensSemana, mapQuatidadeAvaliacaoData, mapQuantidadeAvaliacaoNota);
     }
 
     private Avaliacao toDomain(Map<String, AttributeValue> item) {
