@@ -10,6 +10,7 @@ public class Feedback {
     private String status;
     private String dataEnvio;
     private String userId;
+    private String dataProcessamento;
 
     public String getFeedbackId() {
         return feedbackId;
@@ -57,5 +58,14 @@ public class Feedback {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+
+    public String getDataProcessamento() {
+        return dataProcessamento;
+    }
+
+    public void setDataProcessamento(String dataProcessamento) {
+        this.dataProcessamento = dataProcessamento;
     }
 }

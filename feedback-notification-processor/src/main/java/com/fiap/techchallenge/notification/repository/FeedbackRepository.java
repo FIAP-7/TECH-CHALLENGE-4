@@ -10,7 +10,9 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
+import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @ApplicationScoped
@@ -52,9 +54,39 @@ public class FeedbackRepository {
             if (item.containsKey("dataEnvio") && item.get("dataEnvio").s() != null) {
                 f.setDataEnvio(item.get("dataEnvio").s());
             }
+            if (item.containsKey("status") && item.get("status").s() != null) {
+                f.setStatus(item.get("status").s());
+            }
+            if (item.containsKey("dataProcessamento") && item.get("dataProcessamento").s() != null) {
+                f.setDataProcessamento(item.get("dataProcessamento").s());
+            }
             return f;
         } catch (SdkException e) {
             throw new RuntimeException("Falha ao consultar o DynamoDB", e);
+        }
+    }
+
+    public void updateStatus(String feedbackId, String status, String dataProcessamento) {
+        try {
+            Map<String, AttributeValue> key = Map.of("FeedbackID", AttributeValue.builder().s(feedbackId).build());
+            Map<String, String> exprAttrNames = new HashMap<>();
+            exprAttrNames.put("#s", "status");
+            exprAttrNames.put("#dp", "dataProcessamento");
+
+            Map<String, AttributeValue> exprAttrValues = new HashMap<>();
+            exprAttrValues.put(":s", AttributeValue.builder().s(status).build());
+            exprAttrValues.put(":dp", AttributeValue.builder().s(dataProcessamento).build());
+
+            UpdateItemRequest update = UpdateItemRequest.builder()
+                    .tableName(tableName)
+                    .key(key)
+                    .updateExpression("SET #s = :s, #dp = :dp")
+                    .expressionAttributeNames(exprAttrNames)
+                    .expressionAttributeValues(exprAttrValues)
+                    .build();
+            dynamoDbClient.updateItem(update);
+        } catch (SdkException e) {
+            throw new RuntimeException("Falha ao atualizar status no DynamoDB", e);
         }
     }
 }

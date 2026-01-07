@@ -55,8 +55,6 @@ public class NotificationProcessorFunction implements RequestHandler<SQSEvent, V
                 continue;
             }
 
-            LOG.infof("Processando feedback ID: %s.", feedbackId);
-
             Feedback feedback;
             try {
                 feedback = feedbackRepository.findById(feedbackId);
@@ -69,17 +67,34 @@ public class NotificationProcessorFunction implements RequestHandler<SQSEvent, V
                 continue;
             }
 
+            String statusAtual = feedback.getStatus();
+            LOG.infof("INFO: Processando feedback [%s]. Status atual: %s.", feedbackId, statusAtual);
+
+            if ("PROCESSADO".equalsIgnoreCase(statusAtual)) {
+                LOG.warnf("WARN: Feedback [%s] duplicado detectado. Ignorando processamento..", feedbackId);
+                continue; // retorna sucesso para SQS (mensagem será removida)
+            }
+
             Integer nota = feedback.getNota();
             if (nota == null || nota > NOTA_CRITICA_LIMITE) {
                 LOG.infof("Feedback %s com nota %s não é crítico. Ignorando.", feedbackId, String.valueOf(nota));
-                continue;
+            } else {
+                LOG.infof("Feedback crítico detectado %s. Enviando notificação para %s.", feedbackId, adminEmail);
+                try {
+                    emailService.enviarEmailDeAlerta(feedback);
+                } catch (RuntimeException e) {
+                    LOG.errorf("Falha ao enviar e-mail para feedback %s: %s.", feedbackId, e.getMessage());
+                    throw e;
+                }
             }
 
-            LOG.infof("Feedback crítico detectado %s. Enviando notificação para %s.", feedbackId, adminEmail);
+            // Atualiza status para PROCESSADO ao final com timestamp
+            String agora = Feedback.nowIso();
             try {
-                emailService.enviarEmailDeAlerta(feedback);
+                feedbackRepository.updateStatus(feedbackId, "PROCESSADO", agora);
+                LOG.infof("INFO: Ciclo concluído para feedback [%s]. Status atualizado para PROCESSADO.", feedbackId);
             } catch (RuntimeException e) {
-                LOG.errorf("Falha ao enviar e-mail para feedback %s: %s.", feedbackId, e.getMessage());
+                // Se falhar aqui, lançamos exceção para que SQS reentregue e mantenha idempotência via checagem de status
                 throw e;
             }
         }

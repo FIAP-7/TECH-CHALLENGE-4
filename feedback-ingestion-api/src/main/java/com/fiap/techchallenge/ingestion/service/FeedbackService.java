@@ -37,14 +37,14 @@ public class FeedbackService {
 
     public Feedback processarFeedback(FeedbackRequest request, String userId) {
         String id = UUID.randomUUID().toString();
-        String dataEnvio = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
+        String agora = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
 
         Feedback feedback = new Feedback();
         feedback.setFeedbackId(id);
         feedback.setDescricao(request.getDescricao());
         feedback.setNota(request.getNota());
         feedback.setStatus("PENDENTE");
-        feedback.setDataEnvio(dataEnvio);
+        feedback.setDataEnvio(agora);
         feedback.setUserId(userId);
 
         Map<String, AttributeValue> item = new HashMap<>();
@@ -56,7 +56,7 @@ public class FeedbackService {
             item.put("nota", AttributeValue.builder().n(Integer.toString(request.getNota())).build());
         }
         item.put("status", AttributeValue.builder().s("PENDENTE").build());
-        item.put("dataEnvio", AttributeValue.builder().s(dataEnvio).build());
+        item.put("dataEnvio", AttributeValue.builder().s(agora).build());
         if (userId != null) {
             item.put("userId", AttributeValue.builder().s(userId).build());
         }
@@ -66,6 +66,8 @@ public class FeedbackService {
                 .item(item)
                 .build();
         dynamoDbClient.putItem(put);
+
+        LOG.infof("INFO: Feedback [%s] criado com status PENDENTE.", id);
 
         String payload = "{\"feedbackId\":\"" + id + "\"}";
         if (queueUrl != null && !queueUrl.isBlank()) {

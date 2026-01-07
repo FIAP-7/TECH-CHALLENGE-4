@@ -8,6 +8,8 @@ public class Feedback {
     private Integer nota;
     private String descricao;
     private String dataEnvio;
+    private String status;
+    private String dataProcessamento;
 
     public String getFeedbackId() {
         return feedbackId;
@@ -39,6 +41,22 @@ public class Feedback {
 
     public void setDataEnvio(String dataEnvio) {
         this.dataEnvio = dataEnvio;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDataProcessamento() {
+        return dataProcessamento;
+    }
+
+    public void setDataProcessamento(String dataProcessamento) {
+        this.dataProcessamento = dataProcessamento;
     }
 
     public static String nowIso() {
