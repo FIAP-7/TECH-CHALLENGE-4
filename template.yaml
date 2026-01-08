@@ -21,7 +21,7 @@ Parameters:
   SourceEmail:
     Type: String
     Default: gustavo.jog+no-reply@hotmail.com
-  
+
   QueueNameMain:
     Type: String
     Default: FeedbackSubmittedQueue

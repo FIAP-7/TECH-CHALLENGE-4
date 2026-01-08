@@ -4,6 +4,7 @@ import com.fiap.techchallenge.ingestion.dto.FeedbackRequest;
 import com.fiap.techchallenge.ingestion.model.Feedback;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -23,11 +24,12 @@ public class FeedbackService {
 
     private static final Logger LOG = Logger.getLogger(FeedbackService.class);
 
+    // Lazy initialize AWS SDK clients to drastically reduce Lambda cold-start time
     @Inject
-    DynamoDbClient dynamoDbClient;
+    Provider<DynamoDbClient> dynamoDbClientProvider;
 
     @Inject
-    SqsClient sqsClient;
+    Provider<SqsClient> sqsClientProvider;
 
     @ConfigProperty(name = "feedback.dynamodb.table-name")
     String tableName;
@@ -61,7 +63,8 @@ public class FeedbackService {
                 .tableName(tableName)
                 .item(item)
                 .build();
-        dynamoDbClient.putItem(put);
+        // Initialize DynamoDB client only when needed (first request)
+        dynamoDbClientProvider.get().putItem(put);
 
         LOG.infof("INFO: Feedback [%s] criado com status PENDENTE.", id);
 
@@ -71,7 +74,8 @@ public class FeedbackService {
                     .queueUrl(queueUrl)
                     .messageBody(payload)
                     .build();
-            sqsClient.sendMessage(send);
+            // Initialize SQS client only when needed
+            sqsClientProvider.get().sendMessage(send);
         } else {
             LOG.warn("FEEDBACK_SUBMITTED_QUEUE_URL não configurada; pulando envio para SQS.");
         }
