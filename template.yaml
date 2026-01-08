@@ -128,6 +128,7 @@ Resources:
     Properties:
       Description: API de ingestão de feedbacks (HTTP) -> DynamoDB + SQS.
       PackageType: Image
+      MemorySize: 1024
       Events:
         ApiPost:
           Type: HttpApi
