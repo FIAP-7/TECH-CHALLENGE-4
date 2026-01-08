@@ -46,9 +46,10 @@ public class HtmlPdfGenerator implements PdfGenerator {
             Font destaqueFont = new Font(Font.HELVETICA, 12, Font.BOLD);
 
             Font bodyFont = new Font(Font.HELVETICA, 12, Font.NORMAL);
-            document.add(new Paragraph(new Phrase("Media de avaliações da ultima semana: " + pdfData.mediaAvaliacoes(), bodyFont)));
-            document.add(new Paragraph(new Phrase("Quatidade de avaliações da ultima semana: " + pdfData.quantidadeTotalAvaliacoes(), bodyFont)));
-            document.add(new Paragraph(new Phrase("Quatidade de avaliações criticas: " + pdfData.quantidadeAvaliacoesCriticas(), bodyFont)));
+            String mediaFormatada = String.format(java.util.Locale.US, "%.1f", pdfData.mediaAvaliacoes());
+            document.add(new Paragraph(new Phrase("Média de avaliações da última semana: " + mediaFormatada, bodyFont)));
+            document.add(new Paragraph(new Phrase("Quantidade de avaliações da última semana: " + pdfData.quantidadeTotalAvaliacoes(), bodyFont)));
+            document.add(new Paragraph(new Phrase("Quantidade de avaliações críticas: " + pdfData.quantidadeAvaliacoesCriticas(), bodyFont)));
 
             document.add(new Paragraph(" "));
 
@@ -80,7 +81,7 @@ public class HtmlPdfGenerator implements PdfGenerator {
             tableUrgencia.setWidthPercentage(100);
             tableUrgencia.setWidths(new float[]{4f,2f});
 
-            tableUrgencia.addCell(new Phrase("Nivel de urgência", destaqueFont));
+            tableUrgencia.addCell(new Phrase("Nível de urgência", destaqueFont));
             tableUrgencia.addCell(new Phrase("Quantidade de Avaliações", destaqueFont));
 
             pdfData.mapQuantidadeAvaliacaoNota().forEach((chave, valor) -> {
@@ -96,11 +97,11 @@ public class HtmlPdfGenerator implements PdfGenerator {
             document.add(new Paragraph(" "));
 
             if (pdfData.avaliacoes() == null || pdfData.avaliacoes().isEmpty()) {
-                document.add(new Paragraph("Não possui avaliações nessa semana.", bodyFont));
+                document.add(new Paragraph("Não há avaliações nesta semana.", bodyFont));
             } else{
                 pdfData.avaliacoes().forEach(item -> {
                     linhaAvaliacao("Data de envio: ", destaqueFont, item.getDataEnvio().format(Avaliacao.FORMATTER_DATE), bodyFont, document);
-                    linhaAvaliacao("Urgencia: ", destaqueFont, item.getNota().toString(), bodyFont, document);
+                    linhaAvaliacao("Urgência: ", destaqueFont, item.getNota().toString(), bodyFont, document);
                     linhaAvaliacao("Descrição: ", destaqueFont, item.getDescricao(), bodyFont, document);
 
                     document.add(new Paragraph(" "));
