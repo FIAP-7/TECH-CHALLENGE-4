@@ -29,7 +29,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }} # Usa o segredo com o ARN
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # Login no ECR é OBRIGATÓRIO para PackageType: Image
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -39,7 +38,6 @@ jobs:
         with:
           use-installer: true
 
-      # Cache para acelerar o SAM build (imagens e artefatos reutilizáveis)
       - name: Cache SAM build artifacts
         uses: actions/cache@v4
         with:
@@ -48,13 +46,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-sam-
 
-      # SAM Build vai ler o template.yaml na raiz.
-      # Ele verá Metadata -> DockerContext: ./feedback-notification-processor
-      # E vai rodar o seu Dockerfile automaticamente.
       - name: SAM Build (with cache)
         run: sam build --cached --cache-dir .aws-sam/cache
 
-      # SAM Deploy cria os repositórios ECR automaticamente (--resolve-image-repos)
       - name: SAM Deploy
         run: |
           sam deploy --no-confirm-changeset \
