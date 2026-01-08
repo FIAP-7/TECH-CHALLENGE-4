@@ -28,9 +28,15 @@ public class GerarEnviarPdfUseCase {
 
         String url = storageService.store(pdf, "relatorio.pdf");
 
+        String corpoHtml = "<html><body>" +
+                "<p>Olá, Administrador(a),</p>" +
+                "<p>Seu relatório semanal está disponível <a href=\"" + url + "\">aqui</a>.</p>" +
+                "<p>Atenciosamente,<br/>Sistema de Feedback Automático</p>" +
+                "</body></html>";
+
         emailSender.send(
-                "Relatório disponível",
-                "Seu relatório foi gerado: " + url
+                "Relatório semanal disponível",
+                corpoHtml
         );
     }
 }

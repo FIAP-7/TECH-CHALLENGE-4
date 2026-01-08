@@ -30,7 +30,7 @@ public class SesEmailSender implements EmailSender {
                 .message(Message.builder()
                         .subject(Content.builder().data(tituloEmail).charset("UTF-8").build())
                         .body(Body.builder()
-                                .text(Content.builder().data(corpoEmail).charset("UTF-8").build())
+                                .html(Content.builder().data(corpoEmail).charset("UTF-8").build())
                                 .build())
                         .build())
                 .source(sourceEmail)
