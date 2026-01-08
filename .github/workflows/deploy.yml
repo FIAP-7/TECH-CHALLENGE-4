@@ -26,7 +26,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} # Usa o segredo com o ARN
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -38,16 +38,8 @@ jobs:
         with:
           use-installer: true
 
-      - name: Cache SAM build artifacts
-        uses: actions/cache@v4
-        with:
-          path: .aws-sam/cache
-          key: ${{ runner.os }}-sam-${{ hashFiles('template.yaml', '**/pom.xml', '**/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-sam-
-
-      - name: SAM Build (with cache)
-        run: sam build --cached --cache-dir .aws-sam/cache
+      - name: SAM Build
+        run: sam build
 
       - name: SAM Deploy
         run: |
