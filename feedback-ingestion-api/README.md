@@ -8,7 +8,7 @@ Função Lambda (Quarkus) exposta via AWS HttpApi responsável por receber avali
   - `descricao` (string, opcional)
   - `nota` (inteiro, opcional)
 - A função gera um `feedbackId`, persiste o registro na tabela DynamoDB (`Feedbacks`) com status "PENDENTE" e data de envio, e publica uma mensagem na SQS contendo o `feedbackId`.
-- Autenticação/Autorização: o HttpApi utiliza JWT do Amazon Cognito (Authorizer configurado em `template.yaml`). O `userId` (quando disponível via token) é associado ao feedback.
+- Autenticação/Autorização: o HttpApi utiliza JWT do Amazon Cognito (Authorizer configurado em `template.yaml`).
 
 ## Stack e integrações
 - Linguagem/Framework: Quarkus (Java) como imagem de contêiner para AWS Lambda.

@@ -35,7 +35,7 @@ public class FeedbackService {
     @ConfigProperty(name = "feedback.sqs.queue-url")
     String queueUrl;
 
-    public Feedback processarFeedback(FeedbackRequest request, String userId) {
+    public Feedback processarFeedback(FeedbackRequest request) {
         String id = UUID.randomUUID().toString();
         String agora = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
 
@@ -45,7 +45,6 @@ public class FeedbackService {
         feedback.setNota(request.getNota());
         feedback.setStatus("PENDENTE");
         feedback.setDataEnvio(agora);
-        feedback.setUserId(userId);
 
         Map<String, AttributeValue> item = new HashMap<>();
         item.put("FeedbackID", AttributeValue.builder().s(id).build());
@@ -57,9 +56,6 @@ public class FeedbackService {
         }
         item.put("status", AttributeValue.builder().s("PENDENTE").build());
         item.put("dataEnvio", AttributeValue.builder().s(agora).build());
-        if (userId != null) {
-            item.put("userId", AttributeValue.builder().s(userId).build());
-        }
 
         PutItemRequest put = PutItemRequest.builder()
                 .tableName(tableName)

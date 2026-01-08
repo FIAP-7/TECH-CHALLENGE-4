@@ -9,10 +9,8 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/avaliacao")
 @Produces(MediaType.APPLICATION_JSON)
@@ -23,12 +21,8 @@ public class FeedbackResource {
     FeedbackService service;
 
     @POST
-    public Response criarAvaliacao(@Valid FeedbackRequest request, @Context SecurityContext securityContext) {
-        String userId = null;
-        if (securityContext != null && securityContext.getUserPrincipal() != null) {
-            userId = securityContext.getUserPrincipal().getName();
-        }
-        Feedback feedback = service.processarFeedback(request, userId);
+    public Response criarAvaliacao(@Valid FeedbackRequest request) {
+        Feedback feedback = service.processarFeedback(request);
         return Response.status(Response.Status.CREATED).entity(feedback).build();
     }
 }
