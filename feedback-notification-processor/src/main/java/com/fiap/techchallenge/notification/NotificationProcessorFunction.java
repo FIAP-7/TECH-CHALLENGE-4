@@ -18,7 +18,7 @@ import org.jboss.logging.Logger;
 public class NotificationProcessorFunction implements RequestHandler<SQSEvent, Void> {
 
     private static final Logger LOG = Logger.getLogger(NotificationProcessorFunction.class);
-    private static final int NOTA_CRITICA_LIMITE = 2;
+    private static final int NOTA_CRITICA_LIMITE = 6;
 
     @Inject
     FeedbackRepository feedbackRepository;

@@ -84,7 +84,7 @@ graph TD
     *   **Amazon SQS (Simple Queue Service):** Fila de mensagens que desacopla a ingestão do processamento. Garante que os feedbacks não sejam perdidos e permite o reprocessamento em caso de falhas na função consumidora.
     *   **AWS Lambda (Função Quarkus - `NotificationProcessorFunction`):**
         *   **Gatilho:** Acionada por novas mensagens na fila SQS.
-        *   **Lógica:** Processa a mensagem do SQS. Se o campo `rating` (nota) for crítico (ex: 1 ou 2), a função formata e envia um e-mail de alerta para os administradores via SES.
+        *   **Lógica:** Processa a mensagem do SQS. Se o campo `rating` (nota) for crítico (ex.: menor ou igual a 6), a função formata e envia um e-mail de alerta para os administradores via SES.
     *   **Amazon SES (Simple Email Service):** Serviço de envio de e-mails, utilizado para notificar os administradores sobre feedbacks críticos.
 
 4.  **Geração de Relatórios (Agendada)**

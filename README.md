@@ -1,11 +1,11 @@
 # Tech Challenge 4 - Processador de Eventos e Notificação (Assíncrono)
 
-Este repositório contém a implementação da parte 3 do sistema: um processador assíncrono que lê mensagens da SQS com o ID de um feedback, consulta os dados no DynamoDB e, caso a nota seja crítica (<= 2), envia um e-mail de alerta via Amazon SES.
+Este repositório contém a implementação da parte 3 do sistema: um processador assíncrono que lê mensagens da SQS com o ID de um feedback, consulta os dados no DynamoDB e, caso a nota seja crítica (<= 6), envia um e-mail de alerta via Amazon SES.
 
 ## Módulo criado
 - feedback-notification-processor (Quarkus + AWS Lambda)
   - Handler: `NotificationProcessorFunction` (SQS → DynamoDB → SES)
-  - Regras de negócio: nota crítica quando `nota <= 2`
+  - Regras de negócio: nota crítica quando `nota <= 6`
   - Tratamento de erros conforme AC dos docs
 
 ## Dependências principais
@@ -41,7 +41,7 @@ Arquivo `template.yaml` inclui:
 ## Teste manual ponta a ponta
 1. Insira um item na tabela DynamoDB `Feedbacks` com os atributos principais (`FeedbackID`, `nota`, `descricao`, `dataEnvio`).
 2. Envie uma mensagem na fila `FeedbackSubmittedQueue` com o corpo JSON: `{ "feedbackId": "<id do item>" }`.
-3. Se `nota <= 2`, verifique o recebimento do e-mail no endereço do admin. Se `nota > 2`, nenhum e-mail deve ser enviado.
+3. Se `nota <= 6`, verifique o recebimento do e-mail no endereço do admin. Se `nota > 6`, nenhum e-mail deve ser enviado.
 
 ## Logs esperados (CloudWatch)
 - INFO: "Iniciando processamento de Lote com X mensagens."

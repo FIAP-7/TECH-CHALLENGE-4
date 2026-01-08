@@ -67,7 +67,7 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
         long qtdAvaliacoes = (long) itensSemana.size();
 
         long qtdAvaliacoesCriticas = itensSemana.stream()
-                .filter(item -> item.getNota() < 2)
+                .filter(item -> item.getNota() != null && item.getNota() <= 6)
                 .count();
 
         Map<String, Long> mapQuatidadeAvaliacaoData = itensSemana.stream().collect(
