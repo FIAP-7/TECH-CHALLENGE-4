@@ -84,7 +84,7 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
                 )
         );
 
-        return new PdfData("Avaliacoes", qtdAvaliacoes, mediaNotas, qtdAvaliacoesCriticas, itensSemana, mapQuatidadeAvaliacaoData, mapQuantidadeAvaliacaoNota);
+        return new PdfData("Avaliações", qtdAvaliacoes, mediaNotas, qtdAvaliacoesCriticas, itensSemana, mapQuatidadeAvaliacaoData, mapQuantidadeAvaliacaoNota);
     }
 
     private Avaliacao toDomain(Map<String, AttributeValue> item) {
