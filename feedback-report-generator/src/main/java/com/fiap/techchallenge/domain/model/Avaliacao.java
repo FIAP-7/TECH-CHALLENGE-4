@@ -2,8 +2,10 @@ package com.fiap.techchallenge.domain.model;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @RegisterForReflection
@@ -11,6 +13,8 @@ public class Avaliacao {
 
     public static DateTimeFormatter FORMATTER_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static DateTimeFormatter FORMATTER_DATE_TIME = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+    private static final ZoneId ZONE_SAO_PAULO = ZoneId.of("America/Sao_Paulo");
 
     private String feedbackId;
     private String descricao;
@@ -26,14 +30,22 @@ public class Avaliacao {
         this.status = status;
         this.dataEnvioStr = dataEnvioStr;
 
-        if(this.dataEnvioStr != null){
+        if (this.dataEnvioStr != null) {
+            // Prefer parse as Instant (ISO_INSTANT like 2026-01-09T00:00:00Z) and convert to São Paulo local date
             try {
-                dataEnvio = OffsetDateTime.parse(this.dataEnvioStr).toLocalDate();
+                Instant instant = Instant.parse(this.dataEnvioStr);
+                dataEnvio = instant.atZone(ZONE_SAO_PAULO).toLocalDate();
             } catch (Exception e) {
                 try {
-                    dataEnvio = LocalDate.parse(this.dataEnvioStr);
+                    // Fallback: try OffsetDateTime (keeps offset information) and convert to São Paulo date
+                    dataEnvio = OffsetDateTime.parse(this.dataEnvioStr).atZoneSameInstant(ZONE_SAO_PAULO).toLocalDate();
                 } catch (Exception e2) {
-                    System.out.println("Error ao converter data");
+                    try {
+                        // Fallback: already a local date string (yyyy-MM-dd)
+                        dataEnvio = LocalDate.parse(this.dataEnvioStr);
+                    } catch (Exception e3) {
+                        System.out.println("Error ao converter data: " + this.dataEnvioStr);
+                    }
                 }
             }
         }

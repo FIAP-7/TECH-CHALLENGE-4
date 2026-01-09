@@ -12,6 +12,7 @@ import software.amazon.awssdk.services.dynamodb.model.ScanResponse;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.Period;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,13 +42,13 @@ public class DynamoPdfDataService implements com.fiap.techchallenge.domain.servi
                 .map(this::toDomain)
                 .collect(Collectors.toList());
 
-        LocalDate umaSemanaAtras = LocalDate.now().minus(Period.ofWeeks(1));
+        LocalDate umaSemanaAtras = LocalDate.now(ZoneId.of("America/Sao_Paulo")).minus(Period.ofWeeks(1));
 
         List<Avaliacao> itensSemana = itensDatabase.stream()
                 .filter(item -> item.getDataEnvioStr() != null && !item.getDataEnvioStr().isEmpty())
                 .filter(item -> {
                     try {
-                        LocalDate date = OffsetDateTime.parse(item.getDataEnvioStr()).toLocalDate();
+                        LocalDate date = OffsetDateTime.parse(item.getDataEnvioStr()).atZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDate();
                         return date.isAfter(umaSemanaAtras);
                     } catch (Exception e) {
                         try {

@@ -14,6 +14,7 @@ import org.jboss.logging.Logger;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
+import java.util.Comparator;
 
 @ApplicationScoped
 public class HtmlPdfGenerator implements PdfGenerator {
@@ -99,21 +100,23 @@ public class HtmlPdfGenerator implements PdfGenerator {
             if (pdfData.avaliacoes() == null || pdfData.avaliacoes().isEmpty()) {
                 document.add(new Paragraph("Não há avaliações nesta semana.", bodyFont));
             } else{
-                pdfData.avaliacoes().forEach(item -> {
-                    linhaAvaliacao("Data de envio: ", destaqueFont, item.getDataEnvio().format(Avaliacao.FORMATTER_DATE), bodyFont, document);
-                    linhaAvaliacao("Urgência: ", destaqueFont, item.getNota().toString(), bodyFont, document);
-                    linhaAvaliacao("Descrição: ", destaqueFont, item.getDescricao(), bodyFont, document);
+                pdfData.avaliacoes().stream()
+                        .sorted(Comparator.comparing(Avaliacao::getDataEnvio, Comparator.nullsLast(Comparator.reverseOrder())))
+                        .forEach(item -> {
+                            linhaAvaliacao("Data de envio: ", destaqueFont, item.getDataEnvio().format(Avaliacao.FORMATTER_DATE), bodyFont, document);
+                            linhaAvaliacao("Urgência: ", destaqueFont, item.getNota().toString(), bodyFont, document);
+                            linhaAvaliacao("Descrição: ", destaqueFont, item.getDescricao(), bodyFont, document);
 
-                    document.add(new Paragraph(" "));
+                            document.add(new Paragraph(" "));
 
-                    LineSeparator line = new LineSeparator();
-                    line.setLineWidth(0.5f);
-                    line.setPercentage(90);
-                    line.setLineColor(Color.GRAY);
-                    line.setOffset(4);
+                            LineSeparator line = new LineSeparator();
+                            line.setLineWidth(0.5f);
+                            line.setPercentage(90);
+                            line.setLineColor(Color.GRAY);
+                            line.setOffset(4);
 
-                    document.add(line);
-                });
+                            document.add(line);
+                        });
             }
 
             document.close();
