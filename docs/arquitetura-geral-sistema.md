@@ -29,7 +29,7 @@ Principais componentes:
 - Amazon S3: armazena relatórios gerados.
 - AWS IAM: gerencia permissões mínimas para cada função.
 - Amazon CloudWatch e AWS X-Ray: observabilidade, métricas, logs e rastreamento.
-- AWS SAM/CDK e CodePipeline: provisionamento (IaC) e CI/CD do ambiente.
+- AWS SAM e Github Actions: provisionamento (IaC) e CI/CD do ambiente.
 
 ### **Detalhamento dos Componentes**
 

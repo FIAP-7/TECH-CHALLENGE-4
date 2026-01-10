@@ -60,7 +60,7 @@ Para uma visão detalhada da arquitetura, critérios de aceitação e decisões,
 - Comunicação assíncrona via SQS para desacoplamento e resiliência
 - Logs estruturados e mínimos privilégios de IAM
 
-## 📚 Créditos
+## Créditos
 
 Projeto desenvolvido para o **Tech Challenge FIAP** como parte da entrega da fase 4.
 
