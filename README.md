@@ -1,4 +1,4 @@
-# Tech Challenge 4 — Sistema de Feedback (Landing Page)
+# Tech Challenge 4 — Sistema de Feedback
 
 Bem-vindo(a)! Este repositório contém o sistema de coleta, processamento e geração de relatórios de feedbacks, construído sobre a AWS como desafio da Fase 4 da pós graduação Arquitetura e Desenvolvimento Java da FIAP.
 
