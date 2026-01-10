@@ -1,5 +1,7 @@
 package com.fiap.techchallenge.ingestion.dto;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 @RegisterForReflection
 public class AccessDeniedResponse {
 
