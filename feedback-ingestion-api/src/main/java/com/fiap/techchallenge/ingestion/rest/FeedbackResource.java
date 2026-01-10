@@ -2,6 +2,7 @@ package com.fiap.techchallenge.ingestion.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fiap.techchallenge.ingestion.dto.AccessDeniedResponse;
 import com.fiap.techchallenge.ingestion.dto.FeedbackRequest;
 import com.fiap.techchallenge.ingestion.model.Feedback;
 import com.fiap.techchallenge.ingestion.service.FeedbackService;
@@ -38,7 +39,7 @@ public class FeedbackResource {
     public Response criarAvaliacao(@Valid FeedbackRequest request) {
         if (!isAluno(headers)) {
             return Response.status(Status.FORBIDDEN)
-                    .entity(new ErrorMessage("Acesso negado: seu perfil não tem permissão para enviar avaliações."))
+                    .entity(new AccessDeniedResponse("Acesso negado: seu perfil não tem permissão para enviar avaliações."))
                     .build();
         }
         Feedback feedback = service.processarFeedback(request);
@@ -82,10 +83,4 @@ public class FeedbackResource {
         return false;
     }
 
-    // Simple error message DTO to keep response JSON consistent
-    static class ErrorMessage {
-        public final String message;
-        ErrorMessage(String message) { this.message = message; }
-        public String getMessage() { return message; }
-    }
 }
